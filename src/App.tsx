@@ -60,7 +60,7 @@ function App() {
 
   return (
     <div className="app">
-      <h1>買い物・支出管理アプリ</h1>
+      <h1>買い物・支出マネージャー</h1>
 
       {/* ItemList に4つの props を渡す。
           items        … 表示したい項目の配列
