@@ -1,0 +1,24 @@
+.item-card {
+    display: flex;
+    /* 子要素を横に並べる */
+    align-items: center;
+    /* 縦方向の位置を中央に揃える */
+    gap: 12px;
+    /* 子要素の間隔 */
+
+    border: 1px solid #828181;
+    border-radius: 10px;
+
+    padding: 8px;
+    background-color: hwb(120 98% 2%);
+    margin-bottom: 5px;
+}
+
+.item-card__body p {
+    margin: 0;
+}
+
+.item-card__body {
+    flex: 1; /*余白を全部埋める*/
+
+}

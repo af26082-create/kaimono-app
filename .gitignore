@@ -1,0 +1,18 @@
+# 依存パッケージ（package.json から復元できるので管理しない）
+node_modules
+
+# ビルド結果（ソースから作られるので管理しない）
+dist
+
+# TypeScript のビルドキャッシュ（自動生成物）
+*.tsbuildinfo
+
+# 環境ごとの設定ファイル
+*.local
+
+# OS が勝手に作るファイル
+.DS_Store
+Thumbs.db
+
+# 学習用に退避した旧コード
+_参考_旧コード

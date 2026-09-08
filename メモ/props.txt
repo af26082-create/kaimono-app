@@ -1,0 +1,175 @@
+﻿props まとめ
+
+======================================================================
+核心：props は「関数の引数」そのもの
+======================================================================
+
+コンポーネントはただの関数で、props はその引数。
+
+  // JSX でこう書くと
+  <ItemCard item={item1} onToggle={handleToggle} onDelete={handleDelete} />
+
+  // 実質、こう呼び出しているのと同じ
+  ItemCard({ item: item1, onToggle: handleToggle, onDelete: handleDelete })
+
+JSX の属性を集めて1つのオブジェクトにし、関数に渡している。
+だから受け取り側はこう書く（引数のオブジェクトを分割代入している）。
+
+  function ItemCard({ item, onToggle, onDelete }: ItemCardProps) {
+
+
+======================================================================
+登場人物は3つ。名前は完全に一致させる
+======================================================================
+
+  ① 型を決める（何を受け取るか）
+     type ItemCardProps = {
+         item: Item
+         onToggle: (id: string) => void
+         onDelete: (id: string) => void
+     }
+
+  ② 受け取る
+     function ItemCard({ item, onToggle, onDelete }: ItemCardProps) { ... }
+
+  ③ 渡す（別のファイルから）
+     <ItemCard item={...} onToggle={...} onDelete={...} />
+
+①②③ の名前は1文字でも違うとエラー。
+名前を決める権限は「受け取る側」にある。
+子が「私は item という名前で受け取ります」と宣言し、使う側がそれに従う。
+
+
+======================================================================
+このアプリでの流れ（3階層）
+======================================================================
+
+App（データと動作を持つ）
+ └ ItemList（配列を受け取り、件数分並べる）
+    └ ItemCard（1件を表示する）
+
+--- App.tsx ---
+  const items: Item[] = [item1, item2]
+  function handleToggle(id: string) { console.log('toggle:', id) }
+
+  <ItemList
+    items={items}                          配列を渡す
+    onToggle={handleToggle}                関数を渡す
+    onDelete={handleDelete}
+    emptyMessage="表示する項目がありません"  文字列を渡す
+  />
+
+  → 持っている側が渡す側。
+
+--- ItemList.tsx ---
+  function ItemList({ items, onToggle, onDelete, emptyMessage }: ItemListProps)
+
+  items        … 自分で使う（.length を見る、.map() で回す）
+  emptyMessage … 自分で使う（0件のとき表示）
+  onToggle     … 自分では使わず、そのまま下へ渡す
+  onDelete     … 同上
+
+  <ItemCard
+      key={item.id}
+      item={item}            .map() が作った1件
+      onToggle={onToggle}    受け取ったものをそのまま
+      onDelete={onDelete}
+  />
+
+--- ItemCard.tsx ---
+  <button onClick={() => onDelete(item.id)}>削除</button>
+
+  ここで初めて関数が「実行」される。中身は App の handleDelete。
+
+
+======================================================================
+onToggle={onToggle} が2回書きに見える理由
+======================================================================
+
+  左 = 受け取る側（ItemCard）が決めた受け口の名前
+  右 = いま自分の手元にある値
+
+たまたま綴りが同じなだけで、別のもの。証拠に、こう書いても動く。
+
+  function ItemList({ items, onToggle: f, ... }: ItemListProps) {
+      <ItemCard onToggle={f} ... />
+      //         ↑受け口   ↑手元の値
+  }
+
+
+======================================================================
+props の4つの性質
+======================================================================
+
+① 上から下への一方通行
+   親→子には渡せるが、子→親には渡せない。
+   では、なぜ削除ボタンの id が App に届くのか？
+   → 関数を下に渡しておき、子がそれを呼ぶから。
+
+     App が「これを呼んでね」と関数を下に渡す（props、下向き）
+                     ↓
+     ItemCard がその関数を実行し、引数に id を入れる（情報が上へ）
+
+   これが子から親へ伝える唯一の方法。
+
+② 子は props を書き換えられない（読み取り専用）
+     item.name = '変更'   ← やってはいけない
+   画面は更新されず、親のデータと食い違って原因不明の不具合になる。
+   変えたいときは必ず「親から渡された関数を呼ぶ」。
+
+③ 渡せるものに制限はない
+     文字列      emptyMessage="なし"（{} なしで書ける唯一の型）
+     数値        count={3}
+     真偽値      disabled={true} または disabled
+     オブジェクト item={item}
+     配列        items={items}
+     関数        onToggle={handleToggle}
+     JSX         icon={<span>★</span>}
+
+④ 子は「誰から渡されたか」を知らない
+   ItemCard は onToggle の中身が console.log なのか
+   データ書き換えなのかを知らない。知らなくていい。
+   だから同じ ItemCard を買い物リストでも支出一覧でも使える。
+
+
+======================================================================
+つまずきやすい点
+======================================================================
+
+--- () を付けるかどうか ---
+  onToggle={handleToggle}     ○ 関数そのものを渡す
+  onToggle={handleToggle()}   × 今すぐ実行して結果を渡してしまう
+  onToggle="handleToggle"     × ただの文字列
+
+--- 包み紙 () => が要るかどうか ---
+  onClick={() => onDelete(item.id)}   ○ 引数を足したいので包む
+  onClick={onDelete(item.id)}         × 表示の瞬間に実行される
+  onToggle={onToggle}                 ○ 引数を足さないので包まない
+
+  ルール：引数を足したいときだけ包む。
+
+--- key は props ではない ---
+  <ItemCard key={item.id} item={item} ... />
+  key は React が要素を見分けるための特別な属性。
+  ItemCardProps に書く必要はないし、ItemCard の中で受け取ることもできない。
+
+--- children ---
+  <Box>ここが children</Box>
+  タグで挟んだ中身は children という名前の props として渡る。
+  ItemCard は children を受け取る設計ではないので、挟むとエラーになる。
+  挟むものがないときは <ItemCard /> と自己閉じにする。
+
+--- props が増えてきたら ---
+  5個も6個も並ぶと読みづらい。オブジェクトにまとめて1つで渡すことを考える。
+  ItemCard で name, unitPrice, quantity... とバラさず item 1つにしたのがこれ。
+
+
+======================================================================
+自己チェック
+======================================================================
+
+1. <ItemList items={items} /> の左の items と右の items は、それぞれ何か
+2. ItemCard の中で item.name = '牛乳' と書いてはいけないのはなぜか
+3. App の handleToggle に id が届くまでの経路を説明できるか
+4. onToggle={onToggle} と onClick={() => onToggle(item.id)} で
+   包み方が違う理由は何か
