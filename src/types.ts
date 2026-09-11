@@ -16,6 +16,15 @@ type Item = {
     createdAt: string             // 登録日時
 }
 
+type NewItemInput = {
+  name: string
+  unitPrice: number
+  quantity: number
+  category: Category
+  memo: string
+  status: ItemStatus
+}
+
 const itemTotal = (item: Item) => {
     return item.unitPrice * item.quantity;
 };
@@ -42,4 +51,4 @@ function today(): string {
 }
 
 export { itemTotal, CATEGORIES, today };          // 値（実行時に存在するもの）
-export type { Category, ItemStatus, Item }; // 型（ビルド時に消えるもの）
+export type { Category, ItemStatus, Item, NewItemInput }; // 型（ビルド時に消えるもの）
