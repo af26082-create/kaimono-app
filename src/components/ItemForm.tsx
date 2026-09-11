@@ -1,4 +1,4 @@
-import type { ItemStatus, NewItemInput } from "../types";
+import { type ItemStatus, type NewItemInput, type Category, CATEGORIES } from "../types";
 import { useState } from 'react'
 
 type ItemFormProps = {
@@ -9,30 +9,67 @@ type ItemFormProps = {
 function ItemForm({ status, onAdd }: ItemFormProps) {
 
     const [name, setName] = useState('')
+    const [unitPrice, setUnitPrice] = useState('')
+    const [quantity, setQuantity] = useState('')
+    const [category, setCategory] = useState<Category>('その他')
+    const [memo, setMemo] = useState('')
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
         onAdd({
             name,
-            unitPrice: 0,
-            quantity: 1,
-            category: 'その他',
-            memo: '',
+            unitPrice: Number(unitPrice),
+            quantity: Number(quantity),
+            category: category,
+            memo: memo,
             status,
         })
         setName('')
+        setUnitPrice('')
+        setQuantity('')
+        setCategory('その他')
+        setMemo('')
     }
 
-        return(
+    return (
         <form onSubmit={handleSubmit}>
-            <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            />
+            <label>品名
+                <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                /></label>
+            <label>単価
+                <input
+                    type="number"
+                    value={unitPrice}
+                    onChange={(e) => setUnitPrice(e.target.value)}
+                />
+            </label>
+            <label>個数
+                <input
+                    type="number"
+                    value={quantity}
+                    onChange={(e) => setQuantity(e.target.value)}
+                />
+            </label>
+            <label>カテゴリ
+                <select value={category} onChange={(e) => setCategory(e.target.value as Category)}>
+                    {CATEGORIES.map((c) => (
+                        <option key={c} value={c}>{c}</option>
+                    ))}
+                </select>
+            </label>
+            <label>メモ
+                <input
+                    type="text"
+                    value={memo}
+                    onChange={(e) => setMemo(e.target.value)}
+                />
+            </label>
             <button type="submit">追加</button>
         </form>)
-    
+
 }
 
 export default ItemForm
