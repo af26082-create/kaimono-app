@@ -20,5 +20,26 @@ const itemTotal = (item: Item) => {
     return item.unitPrice * item.quantity;
 };
 
-export { itemTotal, CATEGORIES };          // 値（実行時に存在するもの）
+/**
+ * 今日の日付を '2026-09-10' の形の文字列で返す。
+ * Date型ではなく文字列で扱うのは、localStorage に保存するとどのみち文字列になるため。
+ */
+function today(): string {
+    // new Date() は「呼んだ瞬間の日時」を持つオブジェクトを作る。
+    // 関数の中で呼ぶことが大事。外に置くと、アプリを開いた瞬間の日付で固定されてしまう。
+    const d = new Date()
+
+    const year = d.getFullYear()
+
+    // getMonth() は 0 から始まる（1月が 0）ので 1 を足す。
+    // padStart(2, '0') は「2文字になるまで先頭に 0 を足す」（9 → '09'）。
+    // 数値には padStart がないので、String() で文字列にしてから呼ぶ。
+    const month = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+
+    // テンプレートリテラル（バッククォートと ${}）で連結して返す。
+    return `${year}-${month}-${day}`
+}
+
+export { itemTotal, CATEGORIES, today };          // 値（実行時に存在するもの）
 export type { Category, ItemStatus, Item }; // 型（ビルド時に消えるもの）
