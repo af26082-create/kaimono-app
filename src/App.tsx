@@ -84,30 +84,38 @@ function App() {
     localStorage.setItem(STORAGE_KEY,JSON.stringify(items))
   },[items])
 
-  
+  const plannedItems = items.filter((item) => (item.status === 'planned'))
 
- 
-
+  const boughtItems = items.filter((item) => item.status === 'bought')
 
   return (
     <div className="app">
 
       <h1>お買い物メモ</h1>
 
-
-
-
-      {/* ItemList に4つの props を渡す。
+    {/* ItemList に4つの props を渡す。
           items        … 表示したい項目の配列
           onToggle     … チェックが押されたときに呼んでほしい関数
           onDelete     … 削除が押されたときに呼んでほしい関数
           emptyMessage … 0件のときに出す文言 */}
+      <section>
+      <h2>買い物リスト</h2>
       <ItemList
-        items={items}
+        items={plannedItems}
         onToggle={handleToggle}
         onDelete={handleDelete}
-        emptyMessage="表示する項目がありません"
+        emptyMessage="買う予定のものはありません"
       />
+      </section>
+      <section>
+      <h2>支出</h2>
+      <ItemList
+        items={boughtItems}
+        onToggle={handleToggle}
+        onDelete={handleDelete}
+        emptyMessage="支出はありません"
+      />
+      </section>
     </div>
   )
 }
