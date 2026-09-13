@@ -1,0 +1,57 @@
+.item-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: flex-end;
+}
+
+.item-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 0.85rem;
+    
+}
+
+
+
+.item-form__name {
+    width: 80px;
+}
+
+.item-form__price {
+    width: 40px;
+}
+
+.item-form__quantity {
+    width: 40px;
+}
+
+.item-form__memo {
+    width: 170px;
+}
+
+.form-error {
+    width: 100%;
+    /* 1行を占有して、横に並ばないようにする */
+    color: var(--color-error);
+    margin: 0;
+}
+
+.item-form select {
+    height: 23px;
+    padding: 4px 6px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+}
+
+.item-form button {
+  height: 32px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 6px;
+  background: var(--color-accent);
+  color: #fff;
+  cursor: pointer;
+
+}

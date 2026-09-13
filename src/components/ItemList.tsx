@@ -1,3 +1,4 @@
+import './ItemList.css'
 import type { Item } from '../types'
 import ItemCard from './ItemCard'
 
@@ -13,7 +14,7 @@ function ItemList({ items, onToggle, onDelete, emptyMessage }: ItemListProps) {
     // 0件のときはここで終わり（早期リターン）。
     // これ以降は「1件以上ある」前提で書ける。
     if (items.length === 0) {
-        return <div>{emptyMessage}</div>
+        return <div className="item-list__empty">{emptyMessage}</div>
     }
 
     return (

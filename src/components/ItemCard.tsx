@@ -10,7 +10,7 @@ type ItemCardProps = {
 
 function ItemCard({ item, onToggle, onDelete }: ItemCardProps) {
     return (
-        <div className="item-card">
+        <div className={item.status === 'bought' ? 'item-card is-bought' : 'item-card'}>
 
             <input
                 type="checkbox"
@@ -18,7 +18,7 @@ function ItemCard({ item, onToggle, onDelete }: ItemCardProps) {
                 onChange={() => onToggle(item.id)}
             />
             <div className="item-card__body">
-                <div>{item.name}</div>
+                <div className="item-card__item">{item.name}</div>
                 <div>{item.unitPrice}円 × {item.quantity}個 = {itemTotal(item).toLocaleString()}円</div>
                 <div>{item.category}{item.memo !== "" && ` ・ ${item.memo}`}</div>
                 {item.boughtAt !== null && <p>購入日: {item.boughtAt}</p>}
