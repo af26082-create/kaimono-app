@@ -1,0 +1,13 @@
+.total-bar {
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 8px 0;
+  
+}
+
+.total-bar {
+  background: #eef3f0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+}
