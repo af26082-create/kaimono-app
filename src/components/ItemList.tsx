@@ -7,10 +7,11 @@ type ItemListProps = {
     items: Item[]                     // 表示する項目の配列
     onToggle: (id: string) => void    // ItemCard にそのまま渡す
     onDelete: (id: string) => void    // ItemCard にそのまま渡す
-    emptyMessage: string              // 0件のときに出す文言
+    emptyMessage: string               // 0件のときに出す文言
+    onUpdate: (updated: Item) => void    
 }
 
-function ItemList({ items, onToggle, onDelete, emptyMessage }: ItemListProps) {
+function ItemList({ items, onToggle, onDelete, emptyMessage,onUpdate }: ItemListProps) {
     // 0件のときはここで終わり（早期リターン）。
     // これ以降は「1件以上ある」前提で書ける。
     if (items.length === 0) {
@@ -27,6 +28,7 @@ function ItemList({ items, onToggle, onDelete, emptyMessage }: ItemListProps) {
                     item={item}
                     onToggle={onToggle}
                     onDelete={onDelete}
+                    onUpdate={onUpdate}
                 />
             ))}
         </div>

@@ -6,6 +6,7 @@ import type { Item, NewItemInput } from './types'
 import { useState, useEffect } from 'react'
 import { today } from './types'
 import ItemForm from './components/ItemForm'
+import TotalBar from './components/TotalBar'
 
 // 動作確認用の仮データ。あとで localStorage のデータに置き換える。
 // コンポーネントの外に置いているので、再描画のたびに作り直されない。
@@ -92,6 +93,14 @@ function App() {
 
   }
 
+  function handleUpdate(updated:Item){
+    setItems(
+      items.map((item)=> (item.id === updated.id ? updated : item))
+    )
+  }
+
+ 
+
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
   }, [items])
@@ -99,8 +108,6 @@ function App() {
   const plannedItems = items.filter((item) => (item.status === 'planned'))
 
   const boughtItems = items.filter((item) => item.status === 'bought')
-
-
 
   return (
     <div className="app">
@@ -114,22 +121,26 @@ function App() {
           emptyMessage … 0件のときに出す文言 */}
       <section>
         <h2>買い物リスト</h2>
+        <TotalBar label="予定合計" items={plannedItems} />
         <ItemForm status="planned" onAdd={handleAdd} />
         <ItemList
           items={plannedItems}
           onToggle={handleToggle}
           onDelete={handleDelete}
           emptyMessage="買う予定のものはありません"
+          onUpdate={handleUpdate}
         />
       </section>
-      <section>
+      <section className="">
         <h2>支出</h2>
+        <TotalBar label="支出合計" items={boughtItems} />
         <ItemForm status="bought" onAdd={handleAdd} />
-        <ItemList
+        <ItemList 
           items={boughtItems}
           onToggle={handleToggle}
           onDelete={handleDelete}
           emptyMessage="支出はありません"
+          onUpdate={handleUpdate}
         />
       </section>
     </div>
